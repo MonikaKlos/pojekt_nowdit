@@ -1,5 +1,4 @@
 function varargout = tetniaki(varargin)
-
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
@@ -48,6 +47,8 @@ if(length(nazwa_pliku)>1 && length(sciezka)>1)
     handles.ktory_obraz = 1;
     guidata(hObject, handles);
     imshow(handles.Im(:,:,handles.ktory_obraz), []);
+    
+    set(handles.btnProgowanie, 'Enable', 'on');
 end
 guidata(hObject, handles);
 
@@ -67,7 +68,7 @@ handles.prog =1;
 %wyœwietlenie
 axes(handles.axObraz);
 imshow(handles.Progowanie3D(:,:,handles.ktory_obraz));
-
+set(handles.btnSzkieletyzacja, 'Enable', 'on');
 
 function etLow_Callback(hObject, eventdata, handles)
 function etLow_CreateFcn(hObject, eventdata, handles)
@@ -88,7 +89,6 @@ imshow(I2,[]);
 
 % --- Executes on slider movement.
 function slider_Callback(hObject, eventdata, handles)
-
 global images;
 global masks;
 global skeletons;
@@ -168,8 +168,8 @@ else
      set(handles.tDice, 'String', 'Maski musz¹ mieæ te same wymiary');
 end
 
-% --- Executes on button press in btnSzkieletyzacja1.
-function btnSzkieletyzacja1_Callback(hObject, eventdata, handles)
+% --- Executes on button press in btnSzkieletyzacja.
+function btnSzkieletyzacja_Callback(hObject, eventdata, handles)
 %% gotowa (z internetu) szkieletyzacja
 szkielet = Skeleton3D(logical(handles.Progowanie3D)); %szkieletyzacja
 
@@ -185,6 +185,15 @@ handles.segm = 1;
 guidata(hObject, handles);
 axes(handles.axObraz);
 imshow(handles.Szkieletyzacja3D(:,:,handles.ktory_obraz));
+
+set(handles.btnMaski, 'Enable', 'on');
+set(handles.btn3Dmodel, 'Enable', 'on');
+set(handles.btn_PutSkeletonOnImage, 'Enable', 'on');
+
+% --- Executes on button press in btn_PutSkeletonOnImage.
+function btn_PutSkeletonOnImage_Callback(hObject, eventdata, handles)
+%wljoin(handles.Im(:,:,handles.ktory_obraz),handles.Szkieletyzacja3D(:,:,handles.ktory_obraz), COEFF, options, filename)
+Fun_DispSlices(handles.Im, handles.Szkieletyzacja3D, '13', handles.ktory_obraz);
 
 % --- Executes on button press in btn3Dmodel.
 function btn3Dmodel_Callback(hObject, eventdata, handles)
@@ -514,12 +523,6 @@ set(handles.text_objetosc, 'String', ['Objêtoœæ: ', num2str(objetosc), ' mm^3'])
 
 % --- Executes during object creation, after setting all properties.
 function listbox1_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to listbox1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: listbox controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
@@ -540,7 +543,6 @@ colors = ['y', 'm', 'c', 'r', 'g', 'b', [1,1,1], 'k'];
 
 sekwencja = getfield(segmenty, itemSelected);
 kolor = colors(listboxSelected);
-
 
 okno = figure;
 p=patch(isosurface(sekwencja,9));
@@ -608,7 +610,6 @@ colors = ['y', 'm', 'c', 'r', 'g', 'b', [1,1,1], 'k'];
 
 %sekwencja = getfield(segmenty, itemSelected);
 %kolor = colors(listboxSelected);
-
 
 okno = figure;
 for i =1:8
