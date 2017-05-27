@@ -32,21 +32,23 @@ varargout{1} = handles.output;
 
 function btnWczytaj_Callback(hObject, eventdata, handles)
 %wczytanie
-nazwa_pliku = uigetfile('*.mhd');
-[img info] = read_mhd(nazwa_pliku);
-handles.img_mhd = img;
-handles.Im = img.data;
-handles.Info = info;
-guidata(hObject, handles);
+[nazwa_pliku, sciezka, indeks] = uigetfile('*.mhd');
+if(length(nazwa_pliku)>1 && length(sciezka)>1)
+    [img info] = read_mhd(strcat(sciezka,nazwa_pliku));
+    handles.img_mhd = img;
+    handles.Im = img.data;
+    handles.Info = info;
+    guidata(hObject, handles);
 %ustawienie wielkoœci slidera
-set(handles.slider, 'MAX',size(handles.Im,3));
+    set(handles.slider, 'MAX',size(handles.Im,3));
 %set(handles.slide_slider, 'MIN',1);
-handles.segm = 0;
+    handles.segm = 0;
 %wyœwietlenie
-axes(handles.axObraz);
-handles.ktory_obraz = 1;
-guidata(hObject, handles);
-imshow(handles.Im(:,:,handles.ktory_obraz), []);
+    axes(handles.axObraz);
+    handles.ktory_obraz = 1;
+    guidata(hObject, handles);
+    imshow(handles.Im(:,:,handles.ktory_obraz), []);
+end
 guidata(hObject, handles);
 
 % --- Executes on button press in btnProgowanie.
@@ -94,30 +96,27 @@ global liver;
 global naczynia_watroba;
 
 ktory = round(get(hObject,'Value'));
-
 checkBoxValueLiver = get(handles.checkbox_watroba, 'Value');
 
 if checkBoxValueLiver == 0
-
-if(ktory~=0)
-    handles.ktory_obraz = ktory;
-    guidata(hObject, handles);
-    set(handles.tNumer, 'String', handles.ktory_obraz);
-    axes(handles.axObraz);
-    imshow(handles.Im(:,:,handles.ktory_obraz),[]);
+    if(ktory~=0)
+        handles.ktory_obraz = ktory;
+        guidata(hObject, handles);
+        set(handles.tNumer, 'String', handles.ktory_obraz);
+        axes(handles.axObraz);
+        imshow(handles.Im(:,:,handles.ktory_obraz),[]);
     
     %wyœwietlenie wyniku
-    if(handles.segm ==1)
-        axes(handles.axObraz);
-        imshow(handles.Szkieletyzacja3D(:,:,handles.ktory_obraz));
-        %imshow(handles.skiel(:,:,ktory));
-    
-    else(handles.prog == 1)
-        axes(handles.axObraz);
-        imshow(handles.Progowanie3D(:,:,handles.ktory_obraz));
+        if(handles.segm ==1)
+            axes(handles.axObraz);
+            imshow(handles.Szkieletyzacja3D(:,:,handles.ktory_obraz));
+            %imshow(handles.skiel(:,:,ktory));
+        end
+        if(handles.prog == 1)
+            axes(handles.axObraz);
+            imshow(handles.Progowanie3D(:,:,handles.ktory_obraz));
+        end
     end
-end
-
 else
     axes(handles.axObraz);
     imshow(mat2gray(images(:,:,ktory)));
@@ -142,6 +141,7 @@ else
 end
 
 guidata(hObject, handles);
+
 function slider_CreateFcn(hObject, eventdata, handles)
 if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor',[.9 .9 .9]);
