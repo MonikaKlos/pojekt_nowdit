@@ -186,22 +186,6 @@ guidata(hObject, handles);
 axes(handles.axObraz);
 imshow(handles.Szkieletyzacja3D(:,:,handles.ktory_obraz));
 
-function btnSzkieletyzacja2_Callback(hObject, eventdata, handles)
-%% TODO
-%zapis obrazów do plików
-%dicomwrite(handles.Progowanie3D(:,:,handles.ktory_obraz), 'input.dcm');
-%%da siê zapisaæ tylko obraz 2D
-%doZapisu = handles.Progowanie3D;
-handles.img_mhd.data = handles.Progowanie3D;
-doZapisu = handles.img_mhd;
-%save('wynikProgowanie', 'doZapisu'); %zapis do mat  
-%write_ITKMatrix('wynikProgrowania',doZapisu); %Unable to convert objects of class 'ImageType' into 'double'.
-write_mhd('wynikProgrowanie.mhd', doZapisu); %zapis do mhd
-%uruchomienie exe
-system('BinaryThinning3D.exe "D:\SAS\magisterka\Projekt_ZSPD\ADAMOWICZ TOMASZ\projekt matlab\wynikProgowanie.mhd" output.dcm'); 
-    %run executable with content of fname as inputs
-%odczyt pliku który zapisa³a apka exe
-
 % --- Executes on button press in btn3Dmodel.
 function btn3Dmodel_Callback(hObject, eventdata, handles)
 % przeliczenie wolksela na milimetry
@@ -227,28 +211,6 @@ hold on
 ptCloud = pointCloud(handles.model3d);
 pcshow(ptCloud); %wyrysowanie chmury punktów
 xlabel('X'); ylabel('Y'); zlabel('Z');
-
-
-%% ITK
-% input image - zprogowany zapis i odczyt
-% output - podaæ œcie¿kê
-%% 
-% wynik szkieletyzacji nanieœæ na obraz oryginalny
-% na tym ta lupa - ¿eby siê da³o cofn¹æ
-%% drzewo
-% szkielet 3D na nowym oknie
-%%
-% modyfikacja wyniku - przesuniêcie kropki na zoomie
-%%
-%klikanie segmentów pni po szkielecie - pocz¹tek, koniec 
-%zapis œcie¿ek do excela
-%% DICE
-% zaczytaæ obraz maski od radiologa
-% policzyæ DICE z zaczytanych masek i naszego wyniku
-    % dla tetniaków porównanie œcie¿ek - odleg³oœci 
-% zapisaæ do pliku excel
-%
-
 
 % --- Executes on button press in button_wczytaj_dane.
 function button_wczytaj_dane_Callback(hObject, eventdata, handles)
@@ -283,8 +245,6 @@ if checkBoxValueLiver == 1
     set(handles.slider, 'Value', 1);
 
 end
-
-
 
 % --- Executes on button press in button_wczytaj_maski.
 function button_wczytaj_maski_Callback(hObject, eventdata, handles)
@@ -366,8 +326,6 @@ end
 imshow(mat2gray(watroba), 'Parent', handles.axObraz);
 
 uiwait(msgbox('Szkieletyzacja naczyñ zakoñczona'));
-
-
 
 % --- Executes on button press in button_generate.
 function button_generate_Callback(hObject, eventdata, handles)
@@ -453,8 +411,6 @@ set(handles.listbox1,'string',fieldnames(segmenty));
 
 guidata(hObject, handles);
 
-
-
 % --- Executes on button press in checkbox_watroba.
 function checkbox_watroba_Callback(hObject, eventdata, handles)
 % hObject    handle to checkbox_watroba (see GCBO)
@@ -462,7 +418,6 @@ function checkbox_watroba_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of checkbox_watroba
-
 
 % --- Executes on button press in button_plaszczyzna1.
 function button_plaszczyzna1_Callback(hObject, eventdata, handles)
@@ -473,9 +428,6 @@ global plaszczyzna1;
 imageNumberSelected = int32(get(handles.slider, 'Value'))
 plaszczyzna1 = imageNumberSelected;
 set(handles.text_pozioma, 'String', ['nr ' num2str(plaszczyzna1)]);
-
-
-
 
 % --- Executes on button press in button_plaszczyzna_pionowa1.
 function button_plaszczyzna_pionowa1_Callback(hObject, eventdata, handles)
@@ -491,7 +443,6 @@ uiwait(msgbox('Zaznacz segment'));
 maskaPlaszczyzna1 = roipoly(obraz);
 
 set(handles.text_pionowa1, 'String', 'ok');
-
 
 % --- Executes on button press in button_plaszczyzna_pionowa2.
 function button_plaszczyzna_pionowa2_Callback(hObject, eventdata, handles)
@@ -539,7 +490,6 @@ maskaPlaszczyzna4 = roipoly(obraz);
 
 set(handles.text_pionowa4, 'String', 'ok');
 
-
 % --- Executes on selection change in listbox1.
 function listbox1_Callback(hObject, eventdata, handles)
 % hObject    handle to listbox1 (see GCBO)
@@ -573,7 +523,6 @@ function listbox1_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
 
 % --- Executes on button press in button_3d.
 function button_3d_Callback(hObject, eventdata, handles)
@@ -620,7 +569,6 @@ az=0;
 el=0;
 view(az,el)
 
-
 % --- Executes on button press in button_3d_watroba.
 function button_3d_watroba_Callback(hObject, eventdata, handles)
 % hObject    handle to button_3d_watroba (see GCBO)
@@ -648,7 +596,6 @@ set(gcf,'xlim',[0 250], 'ylim',[0 250])
 az=0;
 el=0;
 view(az,el)
-
 
 % --- Executes on button press in button_3d_segmenty.
 function button_3d_segmenty_Callback(hObject, eventdata, handles)
