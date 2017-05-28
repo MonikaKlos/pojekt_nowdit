@@ -246,6 +246,9 @@ if checkBoxValueLiver == 1
     set(handles.slider, 'Min', 1);
     set(handles.slider, 'Max', filesLength);
     set(handles.slider, 'Value', 1);
+    
+    set(handles.button_wczytaj_maski, 'Enable', 'on');
+
 
 end
 
@@ -281,6 +284,9 @@ set(handles.slider, 'Min', 1);
 set(handles.slider, 'Max', masksLength);
 set(handles.slider, 'Value', 1);
 %set(handles.checkbox_szkielet, 'Value', 0);
+
+set(handles.button_maski_naczyn, 'Enable', 'on');
+
 
 skeletons = [];
 
@@ -327,6 +333,13 @@ end
 %hold of;
 
 imshow(mat2gray(watroba), 'Parent', handles.axObraz);
+
+set(handles.button_plaszczyzna1, 'Enable', 'on');
+set(handles.button_plaszczyzna_pionowa1, 'Enable', 'on');
+set(handles.button_plaszczyzna_pionowa2, 'Enable', 'on');
+set(handles.button_plaszczyzna_pionowa3, 'Enable', 'on');
+set(handles.button_plaszczyzna_pionowa4, 'Enable', 'on');
+set(handles.button_generate, 'Enable', 'on');
 
 uiwait(msgbox('Szkieletyzacja naczyñ zakoñczona'));
 
@@ -407,10 +420,15 @@ set(handles.text_objetosc, 'String', ['Objêtoœæ: ', num2str(objetosc), ' mm^3'])
 objetoscWatroba = sum(sum(sum(liver>0)));
 set(handles.text_objetosc_watroby, 'String', ['Objêtoœæ w¹troby: ', num2str(objetoscWatroba), ' mm^3']);
 
+wspolczynnikDice = DICE(segment1, liver);
+set(handles.text_dice, 'String', ['DICE: ', num2str(wspolczynnikDice)]);
 
 set(handles.listbox1,'Visible','on');
 set(handles.listbox1,'string',fieldnames(segmenty));
 
+set(handles.button_3d, 'Enable', 'on');
+set(handles.button_3d_watroba, 'Enable', 'on');
+set(handles.button_3d_segmenty, 'Enable', 'on');
 
 guidata(hObject, handles);
 
@@ -419,6 +437,13 @@ function checkbox_watroba_Callback(hObject, eventdata, handles)
 % hObject    handle to checkbox_watroba (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+value = get(handles.checkbox_watroba, 'Value');
+if(value == 1)
+     set(handles.button_wczytaj_dane, 'Enable', 'on');
+end
+
+
 
 % Hint: get(hObject,'Value') returns toggle state of checkbox_watroba
 
@@ -503,6 +528,7 @@ function listbox1_Callback(hObject, eventdata, handles)
 %        contents{get(hObject,'Value')} returns selected item from listbox1
 global segmenty;
 global voxelSpace;
+global liver;
 
 listboxSelected = get(hObject,'Value');
 list = get(hObject,'String');
@@ -511,8 +537,9 @@ itemSelected = list{listboxSelected};
 maski = getfield(segmenty, itemSelected);
 
 objetosc = sum(sum(sum(maski>0))) * voxelSpace;
+wspolczynnikDice = DICE(maski, liver);
 set(handles.text_objetosc, 'String', ['Objêtoœæ: ', num2str(objetosc), ' mm^3']);
-
+set(handles.text_dice, 'String', ['DICE: ', num2str(wspolczynnikDice)]);
 %set(handles.slider_segment, 'Value', 1);
 
 % --- Executes during object creation, after setting all properties.
