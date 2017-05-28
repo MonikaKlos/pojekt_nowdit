@@ -23,6 +23,7 @@ function tetniaki_OpeningFcn(hObject, eventdata, handles, varargin)
 handles.output = hObject;
 handles.segm = 0;
 handles.prog = 0;
+handles.mask = 0;
 % Update handles structure
 guidata(hObject, handles);
 
@@ -49,10 +50,13 @@ if(length(nazwa_pliku)>1 && length(sciezka)>1)
     imshow(handles.Im(:,:,handles.ktory_obraz), []);
     
     set(handles.btnProgowanie, 'Enable', 'on');
+    set(handles.btnSzkieletyzacja, 'Enable', 'of');
+    set(handles.btnMaski, 'Enable', 'of');
+    set(handles.btn3Dmodel, 'Enable', 'of');
+    set(handles.btn_PutSkeletonOnImage, 'Enable', 'of');
 end
 guidata(hObject, handles);
 
-% --- Executes on button press in btnProgowanie.
 function btnProgowanie_Callback(hObject, eventdata, handles)
 prog1 = str2num(get(handles.etLow, 'String'));
 prog2 = str2num(get(handles.etHigh, 'String'));
@@ -116,6 +120,10 @@ if checkBoxValueLiver == 0
             axes(handles.axObraz);
             imshow(handles.Progowanie3D(:,:,handles.ktory_obraz));
         end
+        if(handles.mask == 1)
+            axes(handles.axObraz);
+            imshow(squeeze(handles.ImageWithSkeleton(:,:,handles.ktory_obraz,:)));
+        end
     end
 else
     axes(handles.axObraz);
@@ -139,7 +147,6 @@ else
         imshow(mat2gray(watroba), 'Parent', handles.axObraz);
     end
 end
-
 guidata(hObject, handles);
 
 function slider_CreateFcn(hObject, eventdata, handles)
@@ -147,7 +154,6 @@ if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColo
     set(hObject,'BackgroundColor',[.9 .9 .9]);
 end
 
-% --- Executes on button press in btnMaski.
 function btnMaski_Callback(hObject, eventdata, handles)
 %% TODO
 %wczytaj maske
@@ -168,19 +174,9 @@ else
      set(handles.tDice, 'String', 'Maski musz¹ mieæ te same wymiary');
 end
 
-% --- Executes on button press in btnSzkieletyzacja.
 function btnSzkieletyzacja_Callback(hObject, eventdata, handles)
 %% gotowa (z internetu) szkieletyzacja
-szkielet = Skeleton3D(logical(handles.Progowanie3D)); %szkieletyzacja
-
-%[A,node,link] = Skel2Graph3D(handles.Progowanie3D,300);
-% szkieletyzacja3D = zeros(size(handles.Im));
-% for i=1:size(handles.Im,3)
-%     im = handles.Im(:,:,i);
-%     [prog, skel] = Segmentacja(im);
-%     szkieletyzacja3D(:,:,i) =skel;
-% end
-handles.Szkieletyzacja3D = szkielet;
+handles.Szkieletyzacja3D = Skeleton3D(logical(handles.Progowanie3D)); %szkieletyzacja
 handles.segm = 1;
 guidata(hObject, handles);
 axes(handles.axObraz);
@@ -190,12 +186,13 @@ set(handles.btnMaski, 'Enable', 'on');
 set(handles.btn3Dmodel, 'Enable', 'on');
 set(handles.btn_PutSkeletonOnImage, 'Enable', 'on');
 
-% --- Executes on button press in btn_PutSkeletonOnImage.
 function btn_PutSkeletonOnImage_Callback(hObject, eventdata, handles)
-%wljoin(handles.Im(:,:,handles.ktory_obraz),handles.Szkieletyzacja3D(:,:,handles.ktory_obraz), COEFF, options, filename)
-Fun_DispSlices(handles.Im, handles.Szkieletyzacja3D, '13', handles.ktory_obraz);
+handles.ImageWithSkeleton = Fun_DispSlices(handles.Im, handles.Szkieletyzacja3D);
+axes(handles.axObraz);
+imshow(squeeze(handles.ImageWithSkeleton(:,:,handles.ktory_obraz,:)));
+handles.mask = 1;
+guidata(hObject, handles);
 
-% --- Executes on button press in btn3Dmodel.
 function btn3Dmodel_Callback(hObject, eventdata, handles)
 % przeliczenie wolksela na milimetry
 dx = handles.Info.PixelDimensions(1);
@@ -223,9 +220,6 @@ xlabel('X'); ylabel('Y'); zlabel('Z');
 
 % --- Executes on button press in button_wczytaj_dane.
 function button_wczytaj_dane_Callback(hObject, eventdata, handles)
-% hObject    handle to button_wczytaj_dane (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 % wczytanie obrazów
 global images;
 global voxelSpace;

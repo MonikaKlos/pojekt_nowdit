@@ -1,4 +1,4 @@
-function [button] = Fun_DispSlices(Im, ImBin, mode, slice, info)
+function [Im2disp] = Fun_DispSlices(Im, ImBin, mode, slice, info)
 
 % Pawe³ Badura 2011
 % Wyswietlenie serii z na³o¿on¹ binarn¹ lub nie
@@ -17,12 +17,6 @@ function [button] = Fun_DispSlices(Im, ImBin, mode, slice, info)
 % slice - przekrój pocz¹tkowy
 % info - informacja tekstowa do wyœwietlenia w oknie
 
-f = figure( 'MenuBar', 'none', ...
-            'Toolbar', 'none', ...
-            'NumberTitle', 'off', ...
-            'Name', 'Slice-by-slice volume display', ...
-            'WindowStyle', 'modal');
-set(f, 'Units', 'pixels', 'Position', get(0, 'ScreenSize'));
 [w,k,g] = size(Im);
 
 Im = Fun_ImNorm(Im, 2);
@@ -56,7 +50,7 @@ if (nnz(ImBin))
                 ImBin = Fun_ImNorm(ImBin, 2);
         end
     else                % wiele obiektów -> wiele kolorów
-        colors = [1 0 0;  0 1 0;  0 0 1;  1 1 0;  1 0 1;  0 1 1; ...
+        colors = [0 0 1;  0 1 0;  0 0 1;  1 1 0;  1 0 1;  0 1 1; ...
                   0 0 0;  0 0 0;  0 0 0];   % r g b y m c k k k
         switch mode
             case {11, 21}
@@ -96,83 +90,9 @@ else
     empty = true;
 end
 
-% informacja
-if (~isempty(info))
-    hinfo = uicontrol(  'Style', 'Text',...
-                        'Units', 'normalized',...
-                        'FontSize', 10,...
-                        'HorizontalAlignment', 'left',...
-                        'BackgroundColor', [0.2 0 0.2],...
-                        'ForegroundColor', [0.8 1 0.8]);
-    set(hinfo, 'String', info);
-    hinfoSize = get(hinfo, 'Extent');
-    hinfoPosition = hinfoSize * 1.0; 
-    if (mode >= 20)
-        hinfoPosition(1) = (1 - hinfoPosition(3)) / 2;
-        hinfoPosition(2) = 0.98 - hinfoPosition(4);
-    else
-        hinfoPosition(1) = 0.02;
-        hinfoPosition(2) = 0.98 - hinfoPosition(4);
-    end
-    set(hinfo, 'Position', hinfoPosition);
-end
 
+if empty
 
-while (1)
-    if empty
-        subplot('Position', [0.2 0.2 0.6 0.6]),
-        imshow(Im(:,:,slice), []);
-    else
-        switch mode
-            case {11, 12, 13, 14}
-                subplot('Position', [0.2 0.2 0.6 0.6]),
-                imshow(squeeze(Im2disp(:,:,slice,:)));
-            case {21, 22, 23, 24}
-                subplot('Position', [0.1 0.2 0.3 0.6]),
-                imshow(Im(:,:,slice));
-                subplot('Position', [0.6 0.2 0.3 0.6]),
-                imshow(squeeze(Im2disp(:,:,slice,:)));
-            case 20
-                subplot('Position', [0.1 0.2 0.3 0.6]),
-                imshow(Im(:,:,slice));
-                subplot('Position', [0.6 0.2 0.3 0.6]),
-                imshow(ImBin(:,:,slice));
-        end
-    end
-    
-% numer przekroju
-    text(round(1.02*k), round(0.9*w), [int2str(slice), '/' int2str(g)], 'FontSize', 16, 'FontWeight', 'Bold', 'Color', [0.2 0 0.6]);
-% legenda
-    text(round(0.0*k), round(1.04*w), 'Left - prev. slice', 'FontSize', 10, 'Color', [0.6 0 0]);
-    text(round(0.0*k), round(1.09*w), 'Right - next slice', 'FontSize', 10, 'Color', [0.6 0 0]);
-    text(round(0.0*k), round(1.14*w), '- - -10 slices', 'FontSize', 10, 'Color', [0.6 0 0]);
-    text(round(0.0*k), round(1.19*w), '+ - +10 slices', 'FontSize', 10, 'Color', [0.6 0 0]);
-    text(round(0.33*k), round(1.04*w), 'Up - first slice', 'FontSize', 10, 'Color', [0.6 0 0]);
-    text(round(0.33*k), round(1.09*w), 'Down - last slice', 'FontSize', 10, 'Color', [0.6 0 0]);
-    text(round(0.33*k), round(1.14*w), 'g - goto slice', 'FontSize', 10, 'Color', [0.6 0 0]);
-    text(round(0.66*k), round(1.09*w), 'Esc / q - quit', 'FontSize', 10);
-    
-%     [x, y, button] = ginput(1);
-%     switch button
-%         case 28         % lewy: poprzedni przekroj
-%             slice = max(slice-1, 1);
-%         case 29         % prawy: nastêpny przekroj
-%             slice = min(slice+1, g);
-%         case 45         % minus: o 10 do ty³u
-%             slice = max(slice-10, 1);
-%         case 43         % plus: o 10 do przodu
-%             slice = min(slice+10, g);
-%         case 30         % gorny: pierwszy przekroj
-%             slice = 1;
-%         case 31         % dolny: ostatni przekroj
-%             slice = g;
-%         case {71, 103}  % 'g' (goto): wybierz przekrój
-%             slice = str2num(cell2mat(inputdlg('Slice no.:', 'Go to slice', 1)));
-%             slice = max(1, min(slice, g));
-%         case {27, 81, 113}  % 'q', 'esc': koniec
-%             break;
-%         otherwise
-%             continue;
-%     end        
+else   
+    return;
 end
-close(f);
