@@ -50,6 +50,7 @@ if(length(nazwa_pliku)>1 && length(sciezka)>1)
     imshow(handles.Im(:,:,handles.ktory_obraz), []);
     
     set(handles.btnProgowanie, 'Enable', 'on');
+    set(handles.btnLupa,'Enable', 'on');
     set(handles.btnSzkieletyzacja, 'Enable', 'of');
     set(handles.btnMaski, 'Enable', 'of');
     set(handles.btn3Dmodel, 'Enable', 'of');
