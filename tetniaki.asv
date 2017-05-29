@@ -227,6 +227,8 @@ ptCloud.Color = pointscolor;
 pcshow(ptCloud); %wyrysowanie chmury punktów
 xlabel('X'); ylabel('Y'); zlabel('Z');
 % hold on
+%[x,y,z] = ginput(1);
+a = 1;
 
 % --- Executes on button press in button_wczytaj_dane.
 function button_wczytaj_dane_Callback(hObject, eventdata, handles)
