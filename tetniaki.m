@@ -157,22 +157,23 @@ end
 function btnMaski_Callback(hObject, eventdata, handles)
 %% TODO
 %wczytaj maske
-% nazwa_pliku = uigetfile('*.mhd');
-% [img info] = read_mhd(nazwa_pliku);
-% handles.maska = img.data;
-% handles.InfoMaski = info;
-% guidata(hObject, handles);
-
-maska1 = handles.Szkieletyzacja3D;
-maska2 = handles.Szkieletyzacja3D;
-%maska2 = handles.maska;
-if(size(maska1,1) == size(maska2,1) && size(maska1,2) == size(maska2,2) && size(maska1,3) == size(maska2,3))
-   %policz dice
-   dice = DICE(maska1, maska2);
-   set(handles.tDice, 'String', strcat('Wspó³czynnik DICE wynosi: ', int2str(dice)));
-else
-     set(handles.tDice, 'String', 'Maski musz¹ mieæ te same wymiary');
+[nazwa_pliku, sciezka, indeks] = uigetfile('*.mhd');
+if(length(nazwa_pliku)>1 && length(sciezka)>1)
+    [img info] = read_mhd(strcat(sciezka,nazwa_pliku));
+    handles.maska = img.data;
+    handles.InfoMaski = info;
+    guidata(hObject, handles);
 end
+% maska1 = handles.Szkieletyzacja3D;
+% maska2 = handles.Szkieletyzacja3D;
+% %maska2 = handles.maska;
+% if(size(maska1,1) == size(maska2,1) && size(maska1,2) == size(maska2,2) && size(maska1,3) == size(maska2,3))
+%    %policz dice
+%    dice = DICE(maska1, maska2);
+%    set(handles.tDice, 'String', strcat('Wspó³czynnik DICE wynosi: ', int2str(dice)));
+% else
+%      set(handles.tDice, 'String', 'Maski musz¹ mieæ te same wymiary');
+% end
 
 function btnSzkieletyzacja_Callback(hObject, eventdata, handles)
 %% gotowa (z internetu) szkieletyzacja
@@ -212,10 +213,6 @@ model3D(1,:)=[]; %usuniecie pierwszego wiersza (samych zer)
 handles.model3d = model3D;
 guidata(hObject, handles);
 %wyœwietlenie
-% f = figure( 'MenuBar', 'none', ...
-%             'NumberTitle', 'off', ...
-%             'Name', 'Model 3D');
-% set(f, 'Units', 'pixels', 'Position', get(0, 'ScreenSize'));
 figure()
 hold on
 ptCloud = pointCloud(handles.model3d);
@@ -227,6 +224,9 @@ ptCloud.Color = pointscolor;
 pcshow(ptCloud); %wyrysowanie chmury punktów
 xlabel('X'); ylabel('Y'); zlabel('Z');
 % hold on
+% k = boundary(poczatek,koniec);
+% hold on;
+% plot(poczatek(k),koniec(k));
 
 % --- Executes on button press in button_wczytaj_dane.
 function button_wczytaj_dane_Callback(hObject, eventdata, handles)
