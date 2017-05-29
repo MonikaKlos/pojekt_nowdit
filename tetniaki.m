@@ -695,7 +695,7 @@ for i = 1:8
     maski = getfield(segmenty, item);
     dice = DICE(maski, liver);
     objetosc = sum(sum(sum(maski>0))) * voxelSpace;
-    dane{i} = [item, '  ', num2str(objetosc),'  ', num2str(dice), char(10)]
+    dane{i} = [item, '  ', num2str(objetosc),'  ', num2str(dice), char(10)];
 end
 
 c = clock;
