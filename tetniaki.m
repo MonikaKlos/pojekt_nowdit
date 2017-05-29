@@ -440,6 +440,7 @@ set(handles.listbox1,'string',fieldnames(segmenty));
 set(handles.button_3d, 'Enable', 'on');
 set(handles.button_3d_watroba, 'Enable', 'on');
 set(handles.button_3d_segmenty, 'Enable', 'on');
+set(handles.button_excel, 'Enable', 'on');
 
 guidata(hObject, handles);
 
@@ -676,3 +677,34 @@ set(gcf,'xlim',[0 250], 'ylim',[0 250])
 az=0;
 el=0;
 view(az,el)
+
+
+% --- Executes on button press in button_excel.
+function button_excel_Callback(hObject, eventdata, handles)
+% hObject    handle to button_excel (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global segmenty;
+global voxelSpace;
+global liver;
+
+dana = {'segment', 'objetosc [mm^3]', 'DICE'};
+index = 1;
+for i = 1:8
+    item = ['segment', num2str(i)];
+    maski = getfield(segmenty, item);
+    dice = DICE(maski, liver);
+    objetosc = sum(sum(sum(maski>0))) * voxelSpace;
+    dane{i} = [item, '  ', num2str(objetosc),'  ', num2str(dice), char(10)]
+end
+
+c = clock;
+czas = datestr(datenum(c(1),c(2),c(3),c(4),c(5),c(6)));
+czas(czas==' ') = '';
+czas(czas==':') = '';
+czas(czas=='-') = '';
+
+
+nazwa = [czas, '.csv'];
+cell2csv(nazwa, dane);
+
