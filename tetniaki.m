@@ -10,7 +10,8 @@ gui_State = struct('gui_Name',       mfilename, ...
 if nargin && ischar(varargin{1})
     gui_State.gui_Callback = str2func(varargin{1});
 end
-
+%digital image procesing using matlab - kod funkcja border - Gonzalez
+%wyrysowaæ punkty w 3D na wykresie po prostu jako punkty
 if nargout
     [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:});
 else
@@ -213,17 +214,23 @@ end
 model3D(1,:)=[]; %usuniecie pierwszego wiersza (samych zer)
 handles.model3d = model3D;
 guidata(hObject, handles);
-%wyœwietlenie
-figure()
-hold on
-ptCloud = pointCloud(handles.model3d);
-pointscolor=uint8(zeros(ptCloud.Count,3));
-pointscolor(:,1)=0;
-pointscolor(:,2)=0;
-pointscolor(:,3)=0;
-ptCloud.Color = pointscolor;
-pcshow(ptCloud); %wyrysowanie chmury punktów
+
+setappdata(0,'evalue',handles.model3d);
+drzewo3d
+scatter3(handles.model3d(:,1),handles.model3d(:,2),handles.model3d(:,3),'.', 'b');
+view(-25,30)
 xlabel('X'); ylabel('Y'); zlabel('Z');
+%wyœwietlenie
+% figure()
+% hold on
+% ptCloud = pointCloud(handles.model3d);
+% pointscolor=uint8(zeros(ptCloud.Count,3));
+% pointscolor(:,1)=0;
+% pointscolor(:,2)=0;
+% pointscolor(:,3)=0;
+% ptCloud.Color = pointscolor;
+%pcshow(ptCloud); %wyrysowanie chmury punktów
+
 % hold on
 % k = boundary(poczatek,koniec);
 % hold on;
