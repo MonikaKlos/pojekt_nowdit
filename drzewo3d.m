@@ -76,29 +76,13 @@ cameratoolbar('Close');
 
 scatter3(handles.model3d(:,1),handles.model3d(:,2),handles.model3d(:,3),'.', 'b');
 hold on
-scatter3(handles.selectedPoints(1,:), handles.selectedPoints(2,:), handles.selectedPoints(3,:), '*', 'r')
+scatter3(handles.selectedPoints(1,:), handles.selectedPoints(2,:), handles.selectedPoints(3,:), 'fill', 'r')
+set(handles.info, 'String', 'Zapisano wybrany punkt.')
 guidata(hObject, handles);
 
 % --- Executes on button press in btn_CheckPoint.
 function btn_CheckPoint_Callback(hObject, eventdata, handles)
 handles.model3d = getappdata(0,'evalue');
 h = clickA3DPoint(handles.model3d');
+set(handles.info, 'String', ' ')
 guidata(hObject, handles);
-
-% --- Executes on button press in btn_Path.
-function btn_Path_Callback(hObject, eventdata, handles)
-% DT = delaunayTriangulation(x,y,z);
-
-% --- Executes on button press in btn_SavePath.
-function btn_SavePath_Callback(hObject, eventdata, handles)
-% k = boundary(handles.selectedPoints(:,1), handles.selectedPoints(:,2));
-% hold on;
-% plot(handles.model3d(k,1),handles.model3d(k,2));
-P = handles.model3d;
-k = boundary(P,0);
-j = boundary(P,1);
-subplot(1,2,1);
-plot3(P(:,1),P(:,2),P(:,3),'.','MarkerSize',10)
-hold on
-trisurf(k,P(:,1),P(:,2),P(:,3),'Facecolor','red','FaceAlpha',0.1)
-axis equal
